@@ -1,3 +1,12 @@
+> **Privasys SGX Fork** — This is a minimal fork of wasmtime that adds
+> Intel SGX enclave support. The `sgx` branch routes the
+> `x86_64-unknown-teaclave-sgx` target to wasmtime's `sys::custom` C API
+> backend and disables subsystems that assume a full POSIX environment
+> (perfmap profiling, `process::abort`, CPUID-based ISA flag validation).
+> All changes are gated behind `#[cfg(target_vendor = "teaclave")]` —
+> non-SGX builds are unaffected. See **[SGX_FORK.md](SGX_FORK.md)** for
+> the full rationale behind every change.
+
 <div align="center">
   <h1><code>wasmtime</code></h1>
 
