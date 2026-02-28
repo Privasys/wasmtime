@@ -1193,12 +1193,21 @@ impl<'a> Drop for BreakpointEdit<'a> {
 /// the possibility of error.
 ///
 /// [1]: https://searchfox.org/firefox-main/rev/7496c8515212669451d7e775a00c2be07da38ca5/js/src/jit/AutoWritableJitCode.h#26-56
-#[cfg(feature = "std")]
+#[cfg(all(feature = "std", not(target_vendor = "teaclave")))]
 fn abort_on_republish_error(e: crate::Error) -> ! {
     log::error!(
         "Failed to re-publish executable code: {e:?}. Wasmtime cannot return through JIT code on the stack and cannot even panic; aborting the process."
     );
     std::process::abort();
+}
+
+/// In SGX, `std::process::abort` is not available. Use panic instead.
+#[cfg(all(feature = "std", target_vendor = "teaclave"))]
+fn abort_on_republish_error(e: crate::Error) -> ! {
+    log::error!(
+        "Failed to re-publish executable code: {e:?}. Aborting."
+    );
+    panic!("abort: failed to re-publish executable code");
 }
 
 /// In the `no_std` case, we don't have a concept of a "process

@@ -2446,7 +2446,11 @@ impl StoreOpaque {
         }
 
         cfg_if::cfg_if! {
-            if #[cfg(feature = "std")] {
+            if #[cfg(target_vendor = "teaclave")] {
+                // SGX environment: no process::abort, use panic instead
+                let _ = pc;
+                panic!("wasmtime: invalid fault at pc=0x{:x}, addr=0x{:x}", pc, addr);
+            } else if #[cfg(feature = "std")] {
                 // With the standard library a rich error can be printed here
                 // to stderr and the native abort path is used.
                 eprintln!(
