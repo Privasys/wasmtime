@@ -13,7 +13,8 @@ fn main() {
     // A boolean indicating whether there's a `sys` module for this platform.
     // This is true for `unix` or `windows`, but both of those require the `std`
     // feature to also be active so check that too.
-    let supported_os = (unix || windows) && cfg!(feature = "std");
+    let teaclave = cfg_is("target_vendor", "teaclave");
+    let supported_os = (unix || windows) && cfg!(feature = "std") && !teaclave;
 
     let target_arch = std::env::var("CARGO_CFG_TARGET_ARCH").unwrap();
 

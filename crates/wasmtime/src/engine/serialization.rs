@@ -204,6 +204,10 @@ impl Metadata<'_> {
     fn check_compatible(mut self, engine: &Engine) -> Result<()> {
         self.check_triple(engine)?;
         self.check_shared_flags(engine)?;
+        // In SGX, skip ISA flag validation: the .cwasm is embedded in the
+        // enclave binary and its integrity is guaranteed by MRENCLAVE.
+        // Host and enclave may report different CPU features via CPUID.
+        #[cfg(not(target_vendor = "teaclave"))]
         self.check_isa_flags(engine)?;
         self.check_tunables(&engine.tunables())?;
         self.check_features(&engine.features())?;
@@ -222,6 +226,9 @@ impl Metadata<'_> {
             );
         }
 
+        // In SGX, the tool runs on linux-gnu but the enclave target is
+        // teaclave (custom).  Only architecture must match.
+        #[cfg(not(target_vendor = "teaclave"))]
         if module_target.operating_system != engine_target.operating_system {
             bail!(
                 "Module was compiled for operating system '{}'",

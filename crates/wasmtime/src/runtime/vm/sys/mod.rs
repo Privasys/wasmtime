@@ -56,6 +56,12 @@ cfg_if::cfg_if! {
     } else if #[cfg(not(feature = "std"))] {
         mod custom;
         pub use custom::*;
+    } else if #[cfg(target_vendor = "teaclave")] {
+        // SGX enclave — use the custom C API backend.
+        // The embedding crate (enclave-os-awasm) provides the
+        // extern "C" symbols via sgx_platform.rs.
+        mod custom;
+        pub use custom::*;
     } else if #[cfg(windows)] {
         mod windows;
         pub use windows::*;

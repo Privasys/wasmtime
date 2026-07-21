@@ -16,7 +16,7 @@ cfg_if::cfg_if! {
 }
 
 cfg_if::cfg_if! {
-    if #[cfg(all(unix, feature = "std"))] {
+    if #[cfg(all(unix, feature = "std", not(target_vendor = "teaclave")))] {
         mod perfmap;
         pub use perfmap::new as new_perfmap;
     } else {

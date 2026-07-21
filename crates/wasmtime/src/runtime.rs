@@ -73,6 +73,8 @@ cfg_if::cfg_if! {
         // no extensions on miri
     } else if #[cfg(not(feature = "std"))] {
         // no extensions on no-std
+    } else if #[cfg(target_vendor = "teaclave")] {
+        // SGX enclave — no unix extensions (uses sys::custom)
     } else if #[cfg(unix)] {
         pub mod unix;
     } else if #[cfg(windows)] {

@@ -84,13 +84,13 @@ ittapi = { workspace = true, optional = true }
 [target.'cfg(all(target_arch = "x86_64", target_os = "windows"))'.dependencies]
 ittapi = { workspace = true, optional = true }
 
-[target.'cfg(target_os = "linux")'.dependencies]
+[target.'cfg(all(target_os = "linux", not(target_vendor = "teaclave")))'.dependencies]
 memfd = { workspace = true, optional = true }
 
 [target.'cfg(target_vendor = "apple")'.dependencies]
 mach2 = { workspace = true, optional = true }
 
-[target.'cfg(unix)'.dependencies]
+[target.'cfg(all(unix, not(target_vendor = "teaclave")))'.dependencies]
 rustix = { workspace = true, optional = true, features = ["mm", "param"] }
 
 [dev-dependencies]
@@ -381,6 +381,11 @@ custom-virtual-memory = []
 
 # Same as `custom-virtual-memory` above, but for custom signal-handling APIs.
 custom-native-signals = []
+
+# SGX enclave support — routes to sys::custom and skips unix sys module.
+# Enables custom-virtual-memory + custom-native-signals for the C API backend,
+# where sgx_platform.rs (in enclave-os-awasm) provides the extern "C" symbols.
+sgx = ["runtime", "custom-virtual-memory", "custom-native-signals"]
 
 # Same as `custom-virtual-memory` above, but for custom sync primitive APIs.
 custom-sync-primitives = []
