@@ -17,7 +17,7 @@ cfg_select! {
 }
 
 cfg_select! {
-    all(unix, feature = "std") => {
+    all(unix, feature = "std", not(target_vendor = "teaclave")) => {
         mod perfmap;
         pub use perfmap::new as new_perfmap;
     }

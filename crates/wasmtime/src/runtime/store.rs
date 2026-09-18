@@ -2037,6 +2037,11 @@ impl StoreOpaque {
         }
 
         cfg_select! {
+            target_vendor = "teaclave" => {
+                // SGX environment: no process::abort, use panic instead
+                let _ = pc;
+                panic!("wasmtime: invalid fault at pc=0x{:x}, addr=0x{:x}", pc, addr);
+            }
             feature = "std" => {
                 // With the standard library a rich error can be printed here
                 // to stderr and the native abort path is used.

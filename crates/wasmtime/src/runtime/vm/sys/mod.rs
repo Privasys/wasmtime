@@ -58,6 +58,13 @@ cfg_select! {
         mod custom;
         pub use custom::*;
     }
+    target_vendor = "teaclave" => {
+        // SGX enclave — use the custom C API backend.
+        // The embedding crate (enclave-os-awasm) provides the
+        // extern "C" symbols via sgx_platform.rs.
+        mod custom;
+        pub use custom::*;
+    }
     windows => {
         mod windows;
         pub use windows::*;

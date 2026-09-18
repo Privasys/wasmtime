@@ -75,6 +75,9 @@ cfg_select! {
     not(feature = "std") => {
         // no extensions on no-std
     }
+    target_vendor = "teaclave" => {
+        // SGX enclave — no unix extensions (uses sys::custom)
+    }
     unix => {
         pub mod unix;
     }

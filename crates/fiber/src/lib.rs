@@ -32,6 +32,13 @@ cfg_select! {
         mod windows;
         use windows as imp;
     }
+    target_vendor = "teaclave" => {
+        // SGX enclave: `cfg(unix)` is true but mmap/mprotect are not
+        // available, so use the heap-backed stacks of the no_std backend.
+        mod nostd;
+        use nostd as imp;
+        mod stackswitch;
+    }
     unix => {
         mod unix;
         use unix as imp;

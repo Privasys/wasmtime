@@ -4754,6 +4754,9 @@ fn detect_host_feature(feature: &str) -> Option<bool> {
             "avx" => Some(std::is_x86_feature_detected!("avx")),
             "avx2" => Some(std::is_x86_feature_detected!("avx2")),
             "fma" => Some(std::is_x86_feature_detected!("fma")),
+            // The Teaclave SGX sysroot's `std` predates `avxvnni`, and CPUID is
+            // filtered inside SGX anyway (the fork skips the ISA-flag checks).
+            #[cfg(not(target_vendor = "teaclave"))]
             "avxvnni" => Some(std::is_x86_feature_detected!("avxvnni")),
             "bmi1" => Some(std::is_x86_feature_detected!("bmi1")),
             "bmi2" => Some(std::is_x86_feature_detected!("bmi2")),
